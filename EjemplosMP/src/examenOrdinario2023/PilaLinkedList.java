@@ -1,4 +1,4 @@
-package pilasYColas;
+package examenOrdinario2023;
 
 import java.util.LinkedList;
 

@@ -1,4 +1,4 @@
-package ExamenOrdinario2022;
+package examen2022;
 
 import java.util.AbstractList;
 import java.util.Iterator;

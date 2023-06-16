@@ -1,4 +1,4 @@
-package ExamenOrdinario2022;
+package examen2022;
 
 public class MainJosephus {
 

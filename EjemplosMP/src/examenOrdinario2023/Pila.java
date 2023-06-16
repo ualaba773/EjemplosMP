@@ -1,4 +1,4 @@
-package pilasYColas;
+package examenOrdinario2023;
 
 public interface Pila<T> {
 
