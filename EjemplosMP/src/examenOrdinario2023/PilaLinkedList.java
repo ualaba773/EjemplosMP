@@ -12,12 +12,12 @@ public class PilaLinkedList<T> {
 	}
 	
 	public void apilar(T elemento) {
-		linkedList.addFirst(elemento);
+		linkedList.addLast(elemento);
 	}
 	
 	public T cima() throws PilaVaciaException{
 		if(this.isVacia()) {
-			throw new PilaVaciaException("Está vacía");
+			throw new PilaVaciaException("");
 		}else {
 			return linkedList.getLast();
 		}

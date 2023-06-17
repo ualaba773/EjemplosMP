@@ -2,14 +2,22 @@ package archivos;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.Scanner;
+
+import poo.Estudiante;
 
 public class Ejemplo {
 
@@ -59,12 +67,12 @@ public class Ejemplo {
 			//FileWriter fw = new FileWriter("ruta_archivo");
 			
 			fw.write('a');
-			fw.write("a");
+			fw.write("aasdjfhgasjdf");
 			fw.close();
 			
 			//Escribir archivos de texto linea a linea
 			BufferedWriter bw = new BufferedWriter(fw);
-			bw.newLine();
+			bw.newLine(); //\n
 			char[] caracteres = {'a', 'b', 'c'};
 			bw.write(caracteres);
 			bw.close();
@@ -75,11 +83,61 @@ public class Ejemplo {
 			pw.print("");
 			pw.close();
 			
+			//-------------------leer archivos binarios----------------
+			
+			//Leer archivo binarios byte a byte
+			FileInputStream fis = new FileInputStream(file);
+			//FileInputStream fis = new FileInputStream("ruta_archivo");
+			fis.read();
+			fis.close();
+			
+			//Lee archivos binarios. Lee datos primitivos (Int, Double, Float, String,...)
+			DataInputStream dis = new DataInputStream(fis);
+			dis.read();
+			dis.readUTF();
+			dis.readInt();
+			dis.readDouble();
+			dis.close();
+			
+			//Lee archivos binarios. Lee clases/objetos enteros
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			ois.read();
+			ois.readUTF();
+			Estudiante estudiante = (Estudiante) ois.readObject();
+			ois.readObject();
+			ois.close();
+			
+			//-------------------ECRIBIR ARCHIVOS BINARIOS---------------
+			
+			//Escribe archivo binarios byte a byte
+			FileOutputStream fos = new FileOutputStream(file);
+			//FileOutputStream fos = new FileOutputStream("ruta_archivo");
+			fos.write(354);
+			fos.close();
+			
+			//Escribe archivos binarios. Escribe datos primitivos (Int, Double, Float, String,...)
+			DataOutputStream dos = new DataOutputStream(fos);
+			dos.write(3);
+			dos.writeUTF("cadena");
+			dos.writeInt(98);
+			dos.writeDouble(3.2);
+			dos.close();
+			
+			//Escribe archivos binarios. Escribe clases/objetos enteros
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.write(5);
+			oos.writeUTF("ADSAD");
+			Estudiante estudiante2 = new Estudiante(0, "cadena", "cadena");
+			oos.writeObject(estudiante2);
+			oos.close();
 			
 			
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) { //Para leer. Salta cuando no encuentra el archivo que le indicamos
+			System.out.print("Falla");
+		} catch (IOException e) { //Siempre que usemos cualquier clase de lectura o escritura de archivos
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (ClassNotFoundException e) { //Cuando leamos con ObjectInputStream. Salta cuando le decimos que queremos leer un objeto de tipo Estudiante (Por ejemeplo)
+											// y el objeto que encuentra no es de ese tipo
 			e.printStackTrace();
 		}
 		
@@ -200,5 +258,75 @@ public class Ejemplo {
 		
 		return matriz;
 	}
+	
+	
+	public void escribirABinario(Matriz2DReal matriz, File file) {
+		
+		int nFilas = matriz.getnFilas();
+		int nCols = matriz.getnCols();
+		double[][] elementos = matriz.getElementos();
+		
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			DataOutputStream dos = new DataOutputStream(fos);
+			
+			dos.writeInt(nFilas);
+			dos.writeInt(nCols);
+			
+			for(int filas = 0; filas < nFilas; filas++) {
+				for(int columnas = 0; columnas < nCols; columnas++) {
+					dos.writeDouble(elementos[filas][columnas]);
+				}
+			}
+			
+			dos.close();
+			
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Matriz2DReal leerDeBinario(File file) {
+		Matriz2DeReal matriz = null;
+		
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			DataInputStream dis = new DataInputStream(fis);
+			
+			int nFilas = dis.readInt();
+			int nCols = dis.readInt();
+			double[][] elementos = new double[nFilas][nCols];
+			
+			/*int contadorFilas = 0;
+			int contadorColumnas = 0;
+			
+			for(int i = 0; i < nFilas*nCols; i++) {
+				elementos[contadorFilas][contadorColumnas] = dis.readDouble();
+				contadorColumnas++;
+				
+				if(nFilas*nCols %3 == 0) {
+					contadorColumnas = 0;
+					contadorFilas++;
+				}
+			}*/
+			
+			for(int filas = 0; filas < nFilas; filas++) {
+				for(int columnas = 0; columnas < nCols; columnas++) {
+					elementos[filas][columnas] = dis.readDouble();
+				}
+			}
+			
+			matriz = new Matriz2DReal(elementos);
+			
+		}catch(FileNotFoundException e) {
+			
+		}catch(IOException e) {
+			
+		}
+		
+		return matriz;
+	}
+	
+	
 
 }
